@@ -16,6 +16,14 @@ fake_users_db = {
     }
 }
 
+fake_running_history_db = {
+    "admin":{
+        "date": "6/3",
+        "distance": "6km",
+        "time": "1hour"
+    }
+}
+
 class LoginRequest(BaseModel):
     username: str
     password: str
@@ -41,3 +49,10 @@ async def login(login_data: LoginRequest):
 @router.get("/me")
 async def read_me(current_user: str = Depends(get_current_user)):
     return {"username": current_user}
+
+@router.get("/running")
+async def get_running_history(current_user: str = Depends(get_current_user)):
+    user = fake_running_history_db.get(current_user)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    return user
